@@ -3,9 +3,10 @@ package main
 import (
         "fmt"
         "net"
-	"strings"
-	"os"
-	"bufio"
+        "strings"
+        "os"
+        "bufio"
+        "flag"
 )
 
 func LoadGooglebotList() []string {
@@ -28,38 +29,40 @@ func LoadGooglebotList() []string {
 func IdentifiesAsGooglebot(list []string, useragent string) bool {
         for _, test := range list {
                 if strings.Contains(test, useragent) {
-			return true
+                        return true
                 }
         }
 
-	return false
+        return false
 }
 
 func IsGooglebot(lookupResult []string) bool {
-	domain := strings.Join(strings.Split(lookupResult[0], ".")[1:3], ".")
-//	fmt.Println(domain)
-	if domain == "google.com" || domain == "googlebot.com" {
-		return true
-	} else {
-		return false
-	}
+        domain := strings.Join(strings.Split(lookupResult[0], ".")[1:3], ".")
+        //      fmt.Println(domain)
+        if domain == "google.com" || domain == "googlebot.com" {
+                return true
+        } else {
+                return false
+        }
 }
 
 func main() {
+        addressPtr   := flag.String("address", "", "IP address of requester")
+        useragentPtr := flag.String("useragent", "", "User Agent of requester")
+        flag.Parse()
+
         list := LoadGooglebotList()
-	ip := "66.249.90.77"
-//	ip := "50.247.150.22"
-	ua := "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
-	if IdentifiesAsGooglebot(list, ua) {
-		addr, err := net.LookupAddr(ip)
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-		if IsGooglebot(addr) {
-			fmt.Println("YES")
-		} else {
-			fmt.Println("NO")
-		}
-	}
+
+        if IdentifiesAsGooglebot(list, *useragentPtr) {
+                addr, err := net.LookupAddr(*addressPtr)
+                if err != nil {
+                        fmt.Println(err)
+                        os.Exit(1)
+                }
+                if IsGooglebot(addr) {
+                        fmt.Println("YES")
+                } else {
+                        fmt.Println("NO")
+                }
+        }
 }

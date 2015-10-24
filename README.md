@@ -19,5 +19,6 @@ $ go build
 ## Usage
 
 ```
-$ botverifier
+$  ./botverifier -address "66.249.90.77" -useragent "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
+YES
 ```
