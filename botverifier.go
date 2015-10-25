@@ -40,16 +40,15 @@ func IsGooglebot(lookupResult []string) bool {
         for _, result := range lookupResult {
                 parts := strings.Split(result, ".")
                 domain := strings.Join(parts[len(parts) - 3:len(parts) - 1], ".")
-                fmt.Println(domain)
                 if domain == "google.com" || domain == "googlebot.com" {
                         return true
-		}
-	}
-	return false
+                }
+        }
+        return false
 }
 
 func Lookup(address string, useragent string, list []string) {
-        if IdentifiesAsGooglebot(list, useragent) {
+        if useragent == "" {
                 addr, err := net.LookupAddr(address)
                 if err != nil {
                         fmt.Println(err)
@@ -60,6 +59,21 @@ func Lookup(address string, useragent string, list []string) {
                 } else {
                         fmt.Println("NO")
                 }
+        } else {
+                if IdentifiesAsGooglebot(list, useragent) {
+                        addr, err := net.LookupAddr(address)
+                        if err != nil {
+                                fmt.Println(err)
+                                os.Exit(1)
+                        }
+                        if IsGooglebot(addr) {
+                                fmt.Println("YES")
+                        } else {
+                                fmt.Println("NO")
+                        }
+                } else {
+			fmt.Println("NO")
+		}
         }
 }
 
@@ -70,5 +84,14 @@ func main() {
 
         list := LoadGooglebotList()
 
-        Lookup(*addressPtr, *useragentPtr, list)
+        if *addressPtr == "" {
+                fmt.Println("You must supply an IP address")
+                os.Exit(1)
+        }
+
+        if *useragentPtr != "" {
+                Lookup(*addressPtr, *useragentPtr, list)
+        } else {
+                Lookup(*addressPtr, "", list)
+        }
 }
