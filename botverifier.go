@@ -37,24 +37,20 @@ func IdentifiesAsGooglebot(list []string, useragent string) bool {
 }
 
 func IsGooglebot(lookupResult []string) bool {
-        domain := strings.Join(strings.Split(lookupResult[0], ".")[1:3], ".")
-        //      fmt.Println(domain)
-        if domain == "google.com" || domain == "googlebot.com" {
-                return true
-        } else {
-                return false
-        }
+        for _, result := range lookupResult {
+                parts := strings.Split(result, ".")
+                domain := strings.Join(parts[len(parts) - 3:len(parts) - 1], ".")
+                fmt.Println(domain)
+                if domain == "google.com" || domain == "googlebot.com" {
+                        return true
+		}
+	}
+	return false
 }
 
-func main() {
-        addressPtr   := flag.String("address", "", "IP address of requester")
-        useragentPtr := flag.String("useragent", "", "User Agent of requester")
-        flag.Parse()
-
-        list := LoadGooglebotList()
-
-        if IdentifiesAsGooglebot(list, *useragentPtr) {
-                addr, err := net.LookupAddr(*addressPtr)
+func Lookup(address string, useragent string, list []string) {
+        if IdentifiesAsGooglebot(list, useragent) {
+                addr, err := net.LookupAddr(address)
                 if err != nil {
                         fmt.Println(err)
                         os.Exit(1)
@@ -65,4 +61,14 @@ func main() {
                         fmt.Println("NO")
                 }
         }
+}
+
+func main() {
+        addressPtr   := flag.String("address", "", "IP address of requester")
+        useragentPtr := flag.String("useragent", "", "User Agent of requester")
+        flag.Parse()
+
+        list := LoadGooglebotList()
+
+        Lookup(*addressPtr, *useragentPtr, list)
 }
