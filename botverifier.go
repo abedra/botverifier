@@ -1,59 +1,72 @@
-package main
+package botverifier
 
 import (
         "fmt"
         "net"
         "os"
-        "flag"
 )
 
-type Provider interface {
-	LoadUserAgents()
-        IdentifiesAsBot(useragent string) bool
-        IsBot(lookupResult []string) bool
-	Name() string
+type LookupResult struct {
+	IdentifiesAsBot bool
+	IsBot           bool
+	BotName         string
 }
 
-func Lookup(address string, useragent string, providers []Provider) {
+type Provider interface {
+        IdentifiesAsBot(useragent string) bool
+        IsBot(lookupResult []string) bool
+        Name() string
+}
+
+func Providers() []Provider {
+        return []Provider{
+                &Google{},
+        }
+}
+
+func LookupByAddress(address string, providers []Provider) LookupResult {
         addr, err := net.LookupAddr(address)
         if err != nil {
                 fmt.Println(err)
                 os.Exit(1)
         }
 
-        for _, provider := range providers {
-                if provider.IdentifiesAsBot(useragent) {
-                        fmt.Printf("%s identified as %s\n", useragent, provider.Name())
-                } else {
-                        fmt.Printf("%s does not identify as %s\n", useragent, provider.Name())
-                }
+	result := LookupResult{IsBot: false}
 
+        for _, provider := range providers {
                 if provider.IsBot(addr) {
-                        fmt.Printf("%s verfies as %s\n", address, provider.Name())
-                } else {
-                        fmt.Printf("%s cannot be verified as %s\n", address, provider.Name())
+			result.BotName = provider.Name()
+			result.IsBot = true
+			return result
                 }
         }
+
+	return result
 }
 
-func main() {
-        addressPtr   := flag.String("address", "", "IP address of requester")
-        useragentPtr := flag.String("useragent", "", "User Agent of requester")
-        flag.Parse()
-
-        if *addressPtr == "" {
-                fmt.Println("You must supply an IP address")
+func LookupByAddressAndUserAgent(address string, useragent string, providers []Provider) LookupResult {
+        addr, err := net.LookupAddr(address)
+        if err != nil {
+                fmt.Println(err)
                 os.Exit(1)
         }
 
-        providers := []Provider{&Google{UserAgentFile: "googlebot.data"}}
+	result := LookupResult{IsBot: false}
+
         for _, provider := range providers {
-                provider.LoadUserAgents()
+                if useragent != "" {
+                        if provider.IdentifiesAsBot(useragent) {
+				result.BotName = provider.Name()
+				result.IdentifiesAsBot = true
+                        }
+                }
+
+                if provider.IsBot(addr) {
+			result.BotName = provider.Name()
+			result.IsBot = true
+			return result
+                }
         }
 
-        if *useragentPtr != "" {
-                Lookup(*addressPtr, *useragentPtr, providers)
-        } else {
-                Lookup(*addressPtr, "", providers)
-        }
+	return result
 }

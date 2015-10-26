@@ -1,33 +1,33 @@
-package main
+package botverifier
 
 import (
-	"os"
-	"bufio"
-	"fmt"
 	"strings"
 )
 
-type Google struct {
-	UserAgentFile string
-	UserAgentList []string
+var UserAgents = []string{
+	"Googlebot",
+	"Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+	"Googlebot/2.1 (+http://www.google.com/bot.html)",
+	"Googlebot-News",
+	"Googlebot-Image/1.0",
+	"Googlebot-Video/1.0",
+	"SAMSUNG-SGH-E250/1.0 Profile/MIDP-2.0 Configuration/CLDC-1.1 UP.Browser/6.2.3.3.c.1.101 (GUI) MMP/2.0 (compatible; Googlebot-Mobile/2.1; +http://www.google.com/bot.html)",
+	"DoCoMo/2.0 N905i(c100;TB;W24H16) (compatible; Googlebot-Mobile/2.1; +http://www.google.com/bot.html)",
+	"Mozilla/5.0 (iPhone; CPU iPhone OS 8_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12F70 Safari/600.1.4 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+	"(compatible; Mediapartners-Google/2.1; +http://www.google.com/bot.html)",
+	"Mediapartners-Google",
+	"AdsBot-Google (+http://www.google.com/adsbot.html)",
 }
 
-func (g *Google) LoadUserAgents() {
-        file, err := os.Open(g.UserAgentFile)
-        if err != nil {
-                fmt.Printf("Couldn't open %s:", g.UserAgentFile, err)
-                os.Exit(1)
-        }
-        defer file.Close()
-
-        scanner := bufio.NewScanner(file)
-        for scanner.Scan() {
-                g.UserAgentList = append(g.UserAgentList, scanner.Text())
-        }
+type Google struct {
 }
 
 func (g *Google) IdentifiesAsBot(useragent string) bool {
-        for _, test := range g.UserAgentList {
+	if useragent == "" {
+		return false
+	}
+
+        for _, test := range UserAgents {
                 if strings.Contains(test, useragent) {
                         return true
                 }
