@@ -7,9 +7,9 @@ import (
 )
 
 type LookupResult struct {
-	IdentifiesAsBot bool
-	IsBot           bool
-	BotName         string
+        IdentifiesAsBot bool
+        IsBot           bool
+        BotName         string
 }
 
 type Provider interface {
@@ -21,6 +21,7 @@ type Provider interface {
 func Providers() []Provider {
         return []Provider{
                 &Google{},
+                &Bing{},
         }
 }
 
@@ -31,17 +32,17 @@ func LookupByAddress(address string, providers []Provider) LookupResult {
                 os.Exit(1)
         }
 
-	result := LookupResult{IsBot: false}
+        result := LookupResult{IsBot: false}
 
         for _, provider := range providers {
                 if provider.IsBot(addr) {
-			result.BotName = provider.Name()
-			result.IsBot = true
-			return result
+                        result.BotName = provider.Name()
+                        result.IsBot = true
+                        return result
                 }
         }
 
-	return result
+        return result
 }
 
 func LookupByAddressAndUserAgent(address string, useragent string, providers []Provider) LookupResult {
@@ -51,22 +52,22 @@ func LookupByAddressAndUserAgent(address string, useragent string, providers []P
                 os.Exit(1)
         }
 
-	result := LookupResult{IsBot: false}
+        result := LookupResult{IsBot: false}
 
         for _, provider := range providers {
                 if useragent != "" {
                         if provider.IdentifiesAsBot(useragent) {
-				result.BotName = provider.Name()
-				result.IdentifiesAsBot = true
+                                result.BotName = provider.Name()
+                                result.IdentifiesAsBot = true
                         }
                 }
 
                 if provider.IsBot(addr) {
-			result.BotName = provider.Name()
-			result.IsBot = true
-			return result
+                        result.BotName = provider.Name()
+                        result.IsBot = true
+                        return result
                 }
         }
 
-	return result
+        return result
 }
