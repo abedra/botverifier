@@ -61,7 +61,7 @@ $ ./test -address=50.247.150.22 -useragent="Googlebot"
 Lookup Results for 50.247.150.22
   Acting as: Googlebot
   Identifies as a bot: true
-  Is a bot: false
+  Verified as a good bot: false
 $ ./test -address=66.249.90.77 -useragent="Googlebot"
 Lookup Results for 66.249.90.77
   Acting as: Googlebot
