@@ -25,10 +25,10 @@ demonstrates how to use the library.
 package main
 
 import (
-	"github.com/abedra/botverifier"
-	"flag"
-	"fmt"
-	"os"
+        "github.com/abedra/botverifier"
+        "flag"
+        "fmt"
+        "os"
 )
 
 func main() {
@@ -42,14 +42,14 @@ func main() {
         }
 
         providers := botverifier.Providers()
-	result := botverifier.LookupByAddressAndUserAgent(*addressPtr, *useragentPtr, providers)
+        result := botverifier.LookupByAddressAndUserAgent(*addressPtr, *useragentPtr, providers)
 
-	fmt.Println("Lookup Results for", *addressPtr)
-	if result.IdentifiesAsBot || result.IsBot {
-		fmt.Println("  Acting as:", result.BotName)
-	}
-	fmt.Println("  Identifies as a bot:", result.IdentifiesAsBot)
-	fmt.Println("  Verified as a good bot:", result.IsBot)
+        fmt.Println("Lookup Results for", *addressPtr)
+        if result.IdentifiesAsBot || result.IsBot {
+                fmt.Println("  Acting as:", result.BotName)
+        }
+        fmt.Println("  Identifies as a bot:", result.IdentifiesAsBot)
+        fmt.Println("  Verified as a good bot:", result.IsBot)
 }
 ```
 
