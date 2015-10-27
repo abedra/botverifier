@@ -22,6 +22,7 @@ func Providers() []Provider {
         return []Provider{
                 &Google{},
                 &Bing{},
+                &Yahoo{},
         }
 }
 
