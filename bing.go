@@ -12,17 +12,7 @@ type Bing struct {
 }
 
 func (b *Bing) IdentifiesAsBot(useragent string) bool {
-        if useragent == "" {
-                return false
-        }
-
-        for _, test := range BingUserAgents {
-                if strings.Contains(useragent, test) {
-                        return true
-                }
-        }
-
-        return false
+        return IsUserAgentInUserAgents(BingUserAgents, useragent)
 }
 
 func (b *Bing) IsBot(lookupResult []string) bool {

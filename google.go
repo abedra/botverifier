@@ -15,17 +15,7 @@ type Google struct {
 }
 
 func (g *Google) IdentifiesAsBot(useragent string) bool {
-        if useragent == "" {
-                return false
-        }
-
-        for _, test := range GoogleUserAgents {
-                if strings.Contains(useragent, test) {
-                        return true
-                }
-        }
-
-        return false
+        return IsUserAgentInUserAgents(GoogleUserAgents, useragent)
 }
 
 func (g *Google) IsBot(lookupResult []string) bool {
