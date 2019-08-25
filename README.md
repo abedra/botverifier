@@ -1,3 +1,5 @@
+See [ngx_bot_verifier](https://github.com/repsheet/ngx_bot_verifier)
+
 # botverifier
 
 A library to determine if a requester is a known good bot.
